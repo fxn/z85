@@ -87,7 +87,10 @@ static VALUE z85_encode(VALUE _mod, VALUE string)
     }
     encoded[char_nbr] = 0;
 
-    return rb_str_export_locale(rb_str_new_cstr(encoded));
+    VALUE out = rb_str_export_locale(rb_str_new_cstr(encoded));
+    free(encoded);
+
+    return out;
 }
 
 static VALUE z85_decode(VALUE _mod, VALUE string)
@@ -116,7 +119,10 @@ static VALUE z85_decode(VALUE _mod, VALUE string)
         }
     }
 
-    return rb_str_new((const char*) decoded, decoded_size);
+    VALUE out = rb_str_new((const char*) decoded, decoded_size);
+    free(decoded);
+
+    return out;
 }
 
 /* This function has a special name and it is invoked by Ruby to initialize the extension. */
