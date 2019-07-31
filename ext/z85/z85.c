@@ -126,8 +126,10 @@ static VALUE _decode(VALUE string, int padding)
           rb_raise(rb_eRuntimeError, "Invalid padding length");
         } else if (padding_len == 4) {
             out = rb_str_new((const char*) decoded, decoded_size);
-        } else {
+        } else if (decoded_size >= (size_t) padding_len) {
             out = rb_str_new((const char*) decoded, decoded_size - padding_len);
+        } else {
+            rb_raise(rb_eRuntimeError, "Invalid padded string");
         }
     } else {
         out = rb_str_new((const char*) decoded, decoded_size);
