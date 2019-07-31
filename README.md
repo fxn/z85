@@ -19,7 +19,7 @@ Z85.decode("HelloWorld")           # => "\x86O\xD2o\xB5Y\xF7["
 
 However, Z85 requires binaries to have a number of bytes which is a multiple of 4. Arbitrary binaries may not satisfy that.
 
-To address this, `z85` provides `*_with_padding` variants of the methods that adjust and remove padding to be able to handle arbitrary input:
+To address this, `z85` provides `*_with_padding` variants of the methods that manage padding:
 
 ```ruby
 # USE THESE ONES FOR ARBITRARY BINARIES.
