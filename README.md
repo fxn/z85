@@ -8,15 +8,11 @@
 
 Z85 as such is provided by the methods `encode`/`decode`:
 
-```
+```ruby
 # USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING.
 
-> binary = "\x86\x4F\xD2\x6F\xB5\x59\xF7\x5B".force_encoding(Encoding::BINARY)
-=> "\x86O\xD2o\xB5Y\xF7["
-> encoded = Z85.encode(binary)
-=> "HelloWorld"
-> Z85.decode(encoded)
-=> "\x86O\xD2o\xB5Y\xF7["
+Z85.encode("\x86O\xD2o\xB5Y\xF7[") # => "HelloWorld"
+Z85.decode("HelloWorld")           # => "\x86O\xD2o\xB5Y\xF7["
 
 # USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING.
 ```
