@@ -6,29 +6,35 @@
 
 `z85` is a Ruby gem written in C for [Z85](https://rfc.zeromq.org/spec:32/Z85/) encoding.
 
-Straight Z85 is provided by the methods `encode`/`decode`:
+Z85 as such is provided by the methods `encode`/`decode`:
 
 ```
+# USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING
 > binary = "\x86\x4F\xD2\x6F\xB5\x59\xF7\x5B".force_encoding(Encoding::BINARY)
 => "\x86O\xD2o\xB5Y\xF7["
 > encoded = Z85.encode(binary)
 => "HelloWorld"
 > Z85.decode(encoded)
 => "\x86O\xD2o\xB5Y\xF7["
+# USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING
 ```
 
-However, Z85 requires binaries to have a number of bytes which is a multiple of 4. Generic binaries may not satisfy that.
+However, Z85 requires binaries to have a number of bytes which is a multiple of 4. Arbitrary binaries may not satisfy that.
 
-To address this, `z85` provides `*_with_padding` variants of the methods that adjust and remove padding to be able to handle arbitrary input. For example, if you want to store a binary payload in a JSON string, you probably want this combo instead:
+To address this, `z85` provides `*_with_padding` variants of the methods that adjust and remove padding to be able to handle arbitrary input:
 
 ```ruby
+# NORMALLY, YOU WANT TO USE THESE ONES.
 encoded = Z85.encode_with_padding(binary)
 decoded = Z85.decode_with_padding(encoded)
+# NORMALLY, YOU WANT TO USE THESE ONES.
 ```
 
 The method `encode_with_padding` appends as many `\0`s as needed to the input, and stores a trailing digit from 1 to 4 indicating how many extra `NUL`s there are (with 4 meaning none).
 
 On the other side, `decode_with_padding` removes the counter, and chops the `\0`s accordingly.
+
+Since padding does not belong to the Z85 specification, if you encode with padding using `z85`, and decode using another library, the decoding end will probably need to implement what [`decode_with_padding`](https://github.com/fxn/z85/blob/master/lib/z85.rb) does. Should be straightforward.
 
 Padding support was inspired by https://github.com/artemkin/z85.
 
