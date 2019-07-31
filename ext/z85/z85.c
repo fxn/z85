@@ -60,13 +60,15 @@ static byte decoder[96] = {
     0x21, 0x22, 0x23, 0x4F, 0x00, 0x50, 0x00, 0x00
 };
 
-static VALUE z85_encode(VALUE _mod, VALUE string)
+static VALUE _encode(VALUE string, int padding)
 {
     byte* data = (byte*) StringValuePtr(string);
     long size = RSTRING_LEN(string);
 
     if (size % 4)
         rb_raise(rb_eRuntimeError, "Invalid string, number of bytes must be a multiple of 4");
+
+    int padding_len = 4 - (size % 4);
 
     size_t encoded_size = size * 5 / 4;
     char *encoded = malloc(encoded_size + 1);
@@ -91,6 +93,11 @@ static VALUE z85_encode(VALUE _mod, VALUE string)
     free(encoded);
 
     return out;
+}
+
+static VALUE encode(VALUE _mod, VALUE string)
+{
+    return _encode(string, 0);
 }
 
 static VALUE _decode(VALUE string, int padding)
@@ -122,10 +129,8 @@ static VALUE _decode(VALUE string, int padding)
     VALUE out = 0;
     if (padding) {
         int padding_len = data[size] - '0';
-        if (padding_len < 1 || padding_len > 4) {
+        if (padding_len < 0 || padding_len > 3) {
           rb_raise(rb_eRuntimeError, "Invalid padding length");
-        } else if (padding_len == 4) {
-            out = rb_str_new((const char*) decoded, decoded_size);
         } else if (decoded_size >= (size_t) padding_len) {
             out = rb_str_new((const char*) decoded, decoded_size - padding_len);
         } else {
@@ -155,7 +160,7 @@ void Init_z85()
 {
     VALUE z85 = rb_define_module("Z85");
 
-    rb_define_singleton_method(z85, "encode", z85_encode, 1);
+    rb_define_singleton_method(z85, "encode", encode, 1);
     rb_define_singleton_method(z85, "decode", decode, 1);
 
     rb_define_singleton_method(z85, "decode_with_padding", decode_with_padding, 1);

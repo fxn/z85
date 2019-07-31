@@ -11,10 +11,10 @@ class TestZ85 < Minitest::Test
     binary = string_from_bytes(bytes)
 
     assert_equal encoded, Z85.encode(binary)
-    assert_equal encoded + "4", Z85.encode_with_padding(binary)
+    assert_equal encoded + "0", Z85.encode_with_padding(binary)
 
     assert_equal binary, Z85.decode(encoded)
-    assert_equal binary, Z85.decode_with_padding(encoded + "4")
+    assert_equal binary, Z85.decode_with_padding(encoded + "0")
   end
 
   test "encoding the empty string" do
@@ -75,7 +75,7 @@ class TestZ85 < Minitest::Test
   end
 
   test "decode_with_padding returns a binary string" do
-    assert_equal Encoding::BINARY, Z85.decode_with_padding("HelloWorld4").encoding
+    assert_equal Encoding::BINARY, Z85.decode_with_padding("HelloWorld0").encoding
   end
 
   test "encode raises if the length of the binary is not a multiple of 4" do
@@ -105,7 +105,7 @@ class TestZ85 < Minitest::Test
   end
 
   test "decode_with_padding raises if the padding length is too large" do
-    e = assert_raises(StandardError) { Z85.decode_with_padding("3") }
+    e = assert_raises(StandardError) { Z85.decode_with_padding("1") }
     assert_equal "Invalid padded string", e.message
   end
 end

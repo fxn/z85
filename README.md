@@ -33,7 +33,7 @@ The string returned by `decode_with_padding` has encoding `Encoding::ASCII_8BIT`
 
 ### How does padding work?
 
-The method `encode_with_padding` appends as many `\0`s as needed to the input, and stores a trailing digit from 1 to 4 indicating how many extra `NUL`s there are (with 4 meaning none).
+The method `encode_with_padding` appends as many `\0`s as needed to the input, and stores a trailing digit from 0 to 3 indicating how many extra `NUL`s there are.
 
 On the other side, `decode_with_padding` removes the counter, and chops the `\0`s accordingly.
 
@@ -41,7 +41,11 @@ Padding support was inspired by https://github.com/artemkin/z85.
 
 ### Interoperability warning
 
-Since padding does not belong to the Z85 specification, if you encode with padding using `z85`, and decode using another library, the decoding end will probably need to implement what [`decode_with_padding`](https://github.com/fxn/z85/blob/master/lib/z85.rb) does. Should be straightforward.
+Since padding does not belong to the Z85 specification, if you encode with padding using `z85`, and decode using another library, the decoding end will probably need to implement what `decode_with_padding` does. Should be straightforward:
+
+1. Read the counter from the end of the string
+2. Remove the counter
+3. Delete as many bytes as the counter says from the end of the string
 
 ## Implementation details
 
