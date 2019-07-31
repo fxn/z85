@@ -83,4 +83,11 @@ class TestZ85 < Minitest::Test
       assert_equal "Invalid string, number of bytes must be a multiple of 5", e.message
     end
   end
+
+  test "passing unexpected objects raises TypeError (in particular, it does not segfault)" do
+    [nil, 1, [], {}, Object.new].each do |unexpected_object|
+      assert_raises(TypeError) { Z85.encode(unexpected_object) }
+      assert_raises(TypeError) { Z85.decode(unexpected_object) }
+    end
+  end
 end
