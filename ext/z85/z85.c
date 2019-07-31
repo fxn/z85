@@ -93,10 +93,10 @@ static VALUE z85_encode(VALUE _mod, VALUE string)
     return out;
 }
 
-static VALUE z85_decode(VALUE _mod, VALUE string)
+static VALUE _decode(VALUE string, int padding)
 {
     char* data = StringValuePtr(string);
-    long size = RSTRING_LEN(string);
+    long size = RSTRING_LEN(string) - padding;
 
     if (size % 5)
         rb_raise(rb_eRuntimeError, "Invalid string, number of bytes must be a multiple of 5");
@@ -119,10 +119,33 @@ static VALUE z85_decode(VALUE _mod, VALUE string)
         }
     }
 
-    VALUE out = rb_str_new((const char*) decoded, decoded_size);
+    VALUE out = 0;
+    if (padding) {
+        int padding_len = data[size] - '0';
+        if (padding_len < 1 || padding_len > 4) {
+          rb_raise(rb_eRuntimeError, "Invalid padding length");
+        } else if (padding_len == 4) {
+            out = rb_str_new((const char*) decoded, decoded_size);
+        } else {
+            out = rb_str_new((const char*) decoded, decoded_size - padding_len);
+        }
+    } else {
+        out = rb_str_new((const char*) decoded, decoded_size);
+    }
+
     free(decoded);
 
     return out;
+}
+
+static VALUE decode(VALUE _mod, VALUE string)
+{
+    return _decode(string, 0);
+}
+
+static VALUE decode_with_padding(VALUE _mod, VALUE string)
+{
+    return _decode(string, 1);
 }
 
 /* This function has a special name and it is invoked by Ruby to initialize the extension. */
@@ -131,5 +154,7 @@ void Init_z85()
     VALUE z85 = rb_define_module("Z85");
 
     rb_define_singleton_method(z85, "encode", z85_encode, 1);
-    rb_define_singleton_method(z85, "decode", z85_decode, 1);
+    rb_define_singleton_method(z85, "decode", decode, 1);
+
+    rb_define_singleton_method(z85, "decode_with_padding", decode_with_padding, 1);
 }
