@@ -37,7 +37,7 @@ Padding support was inspired by https://github.com/artemkin/z85.
 
 ## Implementation details
 
-To be as faithful to the spec as possible, `z85` on purpose takes the [C reference implementation](https://github.com/zeromq/rfc/blob/master/src/spec_32.c) and performs the minimal changes needed to integrate it with the Ruby C API.
+To be as faithful to the spec as possible, `z85` takes the [C reference implementation](https://github.com/zeromq/rfc/blob/master/src/spec_32.c) and performs the minimal changes needed to integrate it with the Ruby C API.
 
 The [test suite](https://github.com/fxn/z85/blob/master/test/lib/test_z85.rb) contains the reference C test suite, and adds roundtrip verifications for [a variety of files](https://github.com/fxn/z85/tree/master/test/fixtures).
 
