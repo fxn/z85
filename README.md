@@ -9,14 +9,16 @@
 Z85 as such is provided by the methods `encode`/`decode`:
 
 ```
-# USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING
+# USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING.
+
 > binary = "\x86\x4F\xD2\x6F\xB5\x59\xF7\x5B".force_encoding(Encoding::BINARY)
 => "\x86O\xD2o\xB5Y\xF7["
 > encoded = Z85.encode(binary)
 => "HelloWorld"
 > Z85.decode(encoded)
 => "\x86O\xD2o\xB5Y\xF7["
-# USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING
+
+# USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING.
 ```
 
 However, Z85 requires binaries to have a number of bytes which is a multiple of 4. Arbitrary binaries may not satisfy that.
@@ -24,10 +26,12 @@ However, Z85 requires binaries to have a number of bytes which is a multiple of 
 To address this, `z85` provides `*_with_padding` variants of the methods that adjust and remove padding to be able to handle arbitrary input:
 
 ```ruby
-# NORMALLY, YOU WANT TO USE THESE ONES.
+# USE THESE ONES FOR ARBITRARY BINARIES.
+
 encoded = Z85.encode_with_padding(binary)
 decoded = Z85.decode_with_padding(encoded)
-# NORMALLY, YOU WANT TO USE THESE ONES.
+
+# USE THESE ONES FOR ARBITRARY BINARIES.
 ```
 
 The method `encode_with_padding` appends as many `\0`s as needed to the input, and stores a trailing digit from 1 to 4 indicating how many extra `NUL`s there are (with 4 meaning none).
