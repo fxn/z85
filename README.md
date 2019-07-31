@@ -17,10 +17,10 @@ Straight Z85 is provided by the methods `encode`/`decode`:
 
 However, Z85 requires binaries to have a number of bytes which is a multiple of 4. Generic binaries may not satisfy that.
 
-To address this, `z85` provides `*_with_padding` variants of the methods that adjust and remove padding to be able to handle arbitrary input. For example, if you want to store a binary payload in JSON, you probably want this combo instead:
+To address this, `z85` provides `*_with_padding` variants of the methods that adjust and remove padding to be able to handle arbitrary input. For example, if you want to store a binary payload in a JSON string, you probably want this combo instead:
 
 ```ruby
-encoded = Z85.encode_with_padding(image)
+encoded = Z85.encode_with_padding(binary)
 decoded = Z85.decode_with_padding(encoded)
 ```
 
