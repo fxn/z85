@@ -1,2 +1,3 @@
 lib/z85/*.bundle
 lib/z85/*.so
+tmp
