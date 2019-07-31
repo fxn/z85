@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if bin/compile; then
+    bundle exec irb -Ilib -rz85 "$@"
+fi
