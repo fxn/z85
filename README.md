@@ -17,9 +17,9 @@ Z85.decode("HelloWorld")           # => "\x86O\xD2o\xB5Y\xF7["
 # USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING.
 ```
 
-However, Z85 requires the input to have a number of bytes divisible by 4, so you cannot pass arbitrary binaries to `encode`.
+However, Z85 requires the input to have a number of bytes divisible by 4, so you cannot pass arbitrary arguments to `encode`.
 
-To address this, `z85` provides `*_with_padding` variants of the methods that manage padding:
+To address this, `z85` provides `*_with_padding` variants of the methods that are able to handle any binary:
 
 ```ruby
 # USE THESE ONES FOR ARBITRARY BINARIES.
