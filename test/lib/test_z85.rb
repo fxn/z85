@@ -63,11 +63,19 @@ class TestZ85 < Minitest::Test
     ]
   end
 
-  test 'fixture encoding roundtrips' do
+  test "fixture encoding roundtrips" do
     each_fixture do |fixture|
       binary = File.binread(fixture)
       assert_equal binary, Z85.decode_with_padding(Z85.encode_with_padding(binary))
     end
+  end
+
+  test "decode returns a binary string" do
+    assert_equal Encoding::BINARY, Z85.decode("HelloWorld").encoding
+  end
+
+  test "decode_with_padding returns a binary string" do
+    assert_equal Encoding::BINARY, Z85.decode_with_padding("HelloWorld4").encoding
   end
 
   test "encode raises if the length of the binary is not a multiple of 4" do
