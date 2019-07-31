@@ -24,11 +24,13 @@ To address this, `z85` provides `*_with_padding` variants of the methods that ar
 ```ruby
 # USE THESE ONES FOR ARBITRARY BINARIES.
 
-encoded = Z85.encode_with_padding(binary)
-decoded = Z85.decode_with_padding(encoded)
+Z85.encode_with_padding("\x86O\xD2o\xB5Y\xF7[") # => "HelloWorld4"
+Z85.decode_with_padding("HelloWorld4")          # => "\x86O\xD2o\xB5Y\xF7["
 
 # USE THESE ONES FOR ARBITRARY BINARIES.
 ```
+
+Both `decode` and `decode_with_padding` return strings with encoding `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
 
 The method `encode_with_padding` appends as many `\0`s as needed to the input, and stores a trailing digit from 1 to 4 indicating how many extra `NUL`s there are (with 4 meaning none).
 
