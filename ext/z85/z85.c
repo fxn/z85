@@ -66,7 +66,7 @@ static VALUE z85_encode(VALUE _mod, VALUE string)
     long size = RSTRING_LEN(string);
 
     if (size % 4)
-        rb_raise(rb_eRuntimeError, "Invalid string, should have 0 mod 4 bytes");
+        rb_raise(rb_eRuntimeError, "Invalid string, number of bytes must be a multiple of 4");
 
     size_t encoded_size = size * 5 / 4;
     char *encoded = malloc(encoded_size + 1);
@@ -96,7 +96,7 @@ static VALUE z85_decode(VALUE _mod, VALUE string)
     long size = RSTRING_LEN(string);
 
     if (size % 5)
-        rb_raise(rb_eRuntimeError, "Invalid string, should have 0 mod 5 bytes");
+        rb_raise(rb_eRuntimeError, "Invalid string, number of bytes must be a multiple of 5");
 
     size_t decoded_size = size * 4 / 5;
     byte* decoded = malloc(decoded_size);

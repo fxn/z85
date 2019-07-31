@@ -1,6 +1,6 @@
 require "test_helper"
 
-class TestEncode < Minitest::Test
+class TestZ85 < Minitest::Test
   def string_from_bytes(chars)
     chars.pack("C*").force_encoding(Encoding::BINARY)
   end
@@ -9,10 +9,10 @@ class TestEncode < Minitest::Test
     binary = string_from_bytes(bytes)
 
     assert_equal encoded, Z85.encode(binary)
-    assert_equal encoded + "0", Z85.encode_with_padding(binary)
+    assert_equal encoded + "4", Z85.encode_with_padding(binary)
 
     assert_equal binary, Z85.decode(encoded)
-    assert_equal binary, Z85.decode_with_padding(encoded + "0")
+    assert_equal binary, Z85.decode_with_padding(encoded + "4")
   end
 
   test "encoding the empty string" do
@@ -73,6 +73,20 @@ class TestEncode < Minitest::Test
     fixtures.each do |fixture|
       binary = File.binread("#{__dir__}/../fixtures/#{fixture}")
       assert_equal binary, Z85.decode_with_padding(Z85.encode_with_padding(binary))
+    end
+  end
+
+  test "encode raises if the length of the binary is not a multiple of 4" do
+    1.upto(3) do |n|
+      e = assert_raises(StandardError) { Z85.encode("\0" * n) }
+      assert_equal "Invalid string, number of bytes must be a multiple of 4", e.message
+    end
+  end
+
+  test "encode raises if the length of an encoded string is not a multiple of 5" do
+    1.upto(4) do |n|
+      e = assert_raises(StandardError) { Z85.decode("\0" * n) }
+      assert_equal "Invalid string, number of bytes must be a multiple of 5", e.message
     end
   end
 end
