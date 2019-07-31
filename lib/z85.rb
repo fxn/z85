@@ -13,7 +13,7 @@ module Z85
   def self.decode_with_padding(encoded)
     padding_length = encoded[-1].to_i
 
-    decoded = decode(encoded.slice(0, encoded.length - 1))
+    decoded = decode(encoded.chop)
     padding_length.times { decoded.chop! } unless padding_length == 4
 
     decoded
