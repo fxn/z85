@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class TestZ85 < Minitest::Test
@@ -61,17 +63,9 @@ class TestZ85 < Minitest::Test
     ]
   end
 
-  test 'roundtrip with fixtures' do
-    fixtures = %w(
-      zeromq.jpg
-      ruby.jpg
-      zeitwerk_striking_time.png
-      ls
-      lorem_ipsum.txt
-    )
-
-    fixtures.each do |fixture|
-      binary = File.binread("#{__dir__}/../fixtures/#{fixture}")
+  test 'fixture encoding roundtrips' do
+    each_fixture do |fixture|
+      binary = File.binread(fixture)
       assert_equal binary, Z85.decode_with_padding(Z85.encode_with_padding(binary))
     end
   end
