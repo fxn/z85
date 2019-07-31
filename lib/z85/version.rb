@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Z85
-  VERSION = "0.2"
+  VERSION = "0.3"
 end
