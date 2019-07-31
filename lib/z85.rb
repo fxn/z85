@@ -14,7 +14,7 @@ module Z85
     padding_length = encoded[-1].to_i
 
     unless 1 <= padding_length && padding_length <= 4
-      raise "Invalided padding length #{padding_length}"
+      raise "Invalid padding length #{padding_length}"
     end
 
     decoded = decode(encoded.chop)

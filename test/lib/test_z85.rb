@@ -101,6 +101,6 @@ class TestZ85 < Minitest::Test
 
   test "decode_with_padding raises if the padding length is invalid" do
     e = assert_raises(StandardError) { Z85.decode_with_padding("HelloWorld7") }
-    assert_equal "Invalided padding length 7", e.message
+    assert_equal "Invalid padding length 7", e.message
   end
 end
