@@ -1,6 +1,8 @@
 require "rake/testtask"
 require "rake/extensiontask"
 
+task :default => :test
+
 Rake::ExtensionTask.new("z85") do |ext|
   ext.lib_dir = "lib/z85"
 end
