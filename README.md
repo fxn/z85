@@ -10,12 +10,9 @@
 Z85 as such is provided by the methods `encode`/`decode`:
 
 ```ruby
-# USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING.
-
+# 💣 USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING.
 Z85.encode("\x86O\xD2o\xB5Y\xF7[") # => "HelloWorld"
 Z85.decode("HelloWorld")           # => "\x86O\xD2o\xB5Y\xF7["
-
-# USE THESE ONLY IF YOU KNOW WHAT YOU ARE DOING.
 ```
 
 However, Z85 requires the input to have a number of bytes divisible by 4, so you cannot pass arbitrary arguments to `encode`.
@@ -23,12 +20,9 @@ However, Z85 requires the input to have a number of bytes divisible by 4, so you
 To address this, `z85` provides `*_with_padding` variants of the methods that are able to handle any binary:
 
 ```ruby
-# USE THESE ONES FOR ARBITRARY BINARIES.
-
+# 👍 USE THESE ONES FOR ARBITRARY BINARIES.
 Z85.encode_with_padding("\x86O\xD2o\xB5Y\xF7[") # => "HelloWorld4"
 Z85.decode_with_padding("HelloWorld4")          # => "\x86O\xD2o\xB5Y\xF7["
-
-# USE THESE ONES FOR ARBITRARY BINARIES.
 ```
 
 Both `decode` and `decode_with_padding` return strings with encoding `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
