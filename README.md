@@ -25,8 +25,8 @@ To address this, `z85` provides `*_with_padding` variants of the methods that ar
 
 ```ruby
 # 👍 USE THESE ONES FOR ARBITRARY BINARIES.
-Z85.encode_with_padding("\x86O\xD2o\xB5Y\xF7[") # => "HelloWorld4"
-Z85.decode_with_padding("HelloWorld4")          # => "\x86O\xD2o\xB5Y\xF7["
+Z85.encode_with_padding("\x86O\xD2o\xB5Y\xF7[") # => "HelloWorld0"
+Z85.decode_with_padding("HelloWorld0")          # => "\x86O\xD2o\xB5Y\xF7["
 ```
 
 The string returned by `decode_with_padding` has encoding `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
