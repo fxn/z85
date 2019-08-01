@@ -33,17 +33,17 @@ The string returned by `decode_with_padding` has encoding `Encoding::ASCII_8BIT`
 
 ### How does padding work?
 
-The method `encode_with_padding` appends as many `\0`s as needed to the input, and stores a trailing digit from 0 to 3 indicating how many extra `NUL`s there are. For example, given ".":
+The method `encode_with_padding` appends as many `\0`s as needed to the input, and stores a trailing digit from 0 to 3 indicating how many there are. For example, given ".":
 
-1. Since "." has 1 byte, the method appends three `NUL`s: ".\0\0\0".
-2. Encodes that one, which yields "e=U>K".
-3. Appends the counter and returns "e=U>K3".
+1. Since "." has 1 byte, the method appends three `\0`s: ".\0\0\0".
+2. Encodes that padded string, which yields "e=U>K".
+3. Appends the counter, returning "e=U>K3".
 
 Given a padded string, `decode_with_padding` removes the counter from the end, decodes, and chops the `\0`s from the result. In the example above:
 
 1. Given "e=U>K3", the method chops the counter, obtaining "e=U>K".
 2. Decodes that string, which yields ".\0\0\0".
-3. Chops three `\0`s and returns ".".
+3. Chops as many `\0`s as the counter says, returning ".".
 
 Padding support was inspired by https://github.com/artemkin/z85.
 
