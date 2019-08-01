@@ -68,8 +68,8 @@ static VALUE encode(VALUE _mod, VALUE string)
     if (data_len % 4)
         rb_raise(rb_eRuntimeError, "Invalid string, number of bytes must be a multiple of 4");
 
-    size_t encoded_size = data_len * 5 / 4;
-    char *encoded = malloc(encoded_size + 1);
+    size_t encoded_len = data_len * 5 / 4;
+    char *encoded = malloc(encoded_len + 1);
     uint char_nbr = 0;
     uint byte_nbr = 0;
     uint32_t value = 0;
