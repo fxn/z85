@@ -63,18 +63,18 @@ static byte decoder[96] = {
 static VALUE encode(VALUE _mod, VALUE string)
 {
     byte* data = (byte*) StringValuePtr(string);
-    long size = RSTRING_LEN(string);
+    long data_len = RSTRING_LEN(string);
 
-    if (size % 4)
+    if (data_len % 4)
         rb_raise(rb_eRuntimeError, "Invalid string, number of bytes must be a multiple of 4");
 
-    size_t encoded_size = size * 5 / 4;
+    size_t encoded_size = data_len * 5 / 4;
     char *encoded = malloc(encoded_size + 1);
     uint char_nbr = 0;
     uint byte_nbr = 0;
     uint32_t value = 0;
 
-    while (byte_nbr < size) {
+    while (byte_nbr < data_len) {
         value = value * 256 + data[byte_nbr++];
         if (byte_nbr % 4 == 0) {
             uint divisor = 85 * 85 * 85 * 85;
@@ -96,18 +96,18 @@ static VALUE encode(VALUE _mod, VALUE string)
 static VALUE _decode(VALUE string, int padding)
 {
     char* data = StringValuePtr(string);
-    long size = RSTRING_LEN(string) - padding;
+    long data_len = RSTRING_LEN(string) - padding;
 
-    if (size % 5)
+    if (data_len % 5)
         rb_raise(rb_eRuntimeError, "Invalid string, number of bytes must be a multiple of 5");
 
-    size_t decoded_size = size * 4 / 5;
+    size_t decoded_size = data_len * 4 / 5;
     byte* decoded = malloc(decoded_size);
 
     uint byte_nbr = 0;
     uint char_nbr = 0;
     uint32_t value = 0;
-    while (char_nbr < size) {
+    while (char_nbr < data_len) {
         value = value * 85 + decoder[(byte) data[char_nbr++] - 32];
         if (char_nbr % 5 == 0) {
             uint divisor = 256 * 256 * 256;
@@ -121,7 +121,7 @@ static VALUE _decode(VALUE string, int padding)
 
     VALUE out = 0;
     if (padding) {
-        int counter = data[size] - '0';
+        int counter = data[data_len] - '0';
         if (counter < 0 || counter > 3) {
           rb_raise(rb_eRuntimeError, "Invalid padding length");
         } else if (decoded_size >= (size_t) counter) {
