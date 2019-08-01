@@ -93,15 +93,6 @@ static VALUE encode(VALUE _mod, VALUE string)
     return out;
 }
 
-static void validate_counter(int counter, size_t decoded_size)
-{
-    if (counter < 0 || counter > 3) {
-        rb_raise(rb_eRuntimeError, "Invalid padding counter");
-    } else if (decoded_size < (size_t) counter) {
-        rb_raise(rb_eRuntimeError, "Invalid padded string, too short");
-    }
-}
-
 static VALUE _decode(VALUE string, int padding)
 {
     char* data = StringValuePtr(string);
@@ -128,11 +119,16 @@ static VALUE _decode(VALUE string, int padding)
         }
     }
 
-    VALUE out;
+    VALUE out = 0;
     if (padding) {
         int counter = data[data_len] - '0';
-        validate_counter(counter, decoded_size);
-        out = rb_str_new((const char*) decoded, decoded_size - counter);
+        if (counter < 0 || counter > 3) {
+          rb_raise(rb_eRuntimeError, "Invalid padding length");
+        } else if (decoded_size >= (size_t) counter) {
+            out = rb_str_new((const char*) decoded, decoded_size - counter);
+        } else {
+            rb_raise(rb_eRuntimeError, "Invalid padded string");
+        }
     } else {
         out = rb_str_new((const char*) decoded, decoded_size);
     }
