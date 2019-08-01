@@ -60,21 +60,18 @@ static byte decoder[96] = {
     0x21, 0x22, 0x23, 0x4F, 0x00, 0x50, 0x00, 0x00
 };
 
-static VALUE encode(VALUE _mod, VALUE string)
+static VALUE Z85_encode(VALUE _mod, VALUE string)
 {
     byte* data = (byte*) StringValuePtr(string);
-    long data_len = RSTRING_LEN(string);
+    long size = RSTRING_LEN(string);
 
-    if (data_len % 4)
-        rb_raise(rb_eRuntimeError, "Invalid string, number of bytes must be a multiple of 4");
-
-    size_t encoded_len = data_len * 5 / 4;
+    size_t encoded_len = size * 5 / 4;
     char *encoded = malloc(encoded_len + 1);
     uint char_nbr = 0;
     uint byte_nbr = 0;
     uint32_t value = 0;
 
-    while (byte_nbr < data_len) {
+    while (byte_nbr < size) {
         value = value * 256 + data[byte_nbr++];
         if (byte_nbr % 4 == 0) {
             uint divisor = 85 * 85 * 85 * 85;
@@ -89,36 +86,24 @@ static VALUE encode(VALUE _mod, VALUE string)
 
     VALUE out = rb_str_export_locale(rb_str_new_cstr(encoded));
     free(encoded);
-
     return out;
 }
 
-static VALUE _decode(VALUE string, int padding)
+static VALUE Z85_decode(VALUE _mod, VALUE rstring)
 {
-    char* data = StringValuePtr(string);
-    long data_len = RSTRING_LEN(string) - padding;
+    char* string = StringValuePtr(rstring);
+    long strlen = RSTRING_LEN(rstring);
+    if (strlen % 5)
+      strlen--; /* It is padded, ignore the counter */
 
-    if (data_len % 5)
-        rb_raise(rb_eRuntimeError, "Invalid string, number of bytes must be a multiple of 5");
-
-    size_t decoded_size = data_len * 4 / 5;
-
-    /* Verify the counter looks legit before even allocating memory. */
-    if (padding) {
-        int counter = data[data_len] - '0';
-        if (counter < 0 || counter > 3)
-            rb_raise(rb_eRuntimeError, "Invalid padding length");
-        else if (decoded_size < (size_t) counter)
-            rb_raise(rb_eRuntimeError, "Invalid padded string");
-    }
-
+    size_t decoded_size = strlen * 4 / 5;
     byte* decoded = malloc(decoded_size);
 
     uint byte_nbr = 0;
     uint char_nbr = 0;
     uint32_t value = 0;
-    while (char_nbr < data_len) {
-        value = value * 85 + decoder[(byte) data[char_nbr++] - 32];
+    while (char_nbr < strlen) {
+        value = value * 85 + decoder[(byte) string[char_nbr++] - 32];
         if (char_nbr % 5 == 0) {
             uint divisor = 256 * 256 * 256;
             while (divisor) {
@@ -129,23 +114,9 @@ static VALUE _decode(VALUE string, int padding)
         }
     }
 
-    VALUE out = padding ?
-      rb_str_new((const char*) decoded, decoded_size - (data[data_len] - '0')) :
-      rb_str_new((const char*) decoded, decoded_size);
-
+    VALUE out = rb_str_new((const char*) decoded, decoded_size);
     free(decoded);
-
     return out;
-}
-
-static VALUE decode(VALUE _mod, VALUE string)
-{
-    return _decode(string, 0);
-}
-
-static VALUE decode_with_padding(VALUE _mod, VALUE string)
-{
-    return _decode(string, 1);
 }
 
 /* This function has a special name and it is invoked by Ruby to initialize the extension. */
@@ -153,8 +124,6 @@ void Init_z85()
 {
     VALUE z85 = rb_define_module("Z85");
 
-    rb_define_singleton_method(z85, "encode", encode, 1);
-    rb_define_singleton_method(z85, "decode", decode, 1);
-
-    rb_define_singleton_method(z85, "decode_with_padding", decode_with_padding, 1);
+    rb_define_singleton_method(z85, "_encode", Z85_encode, 1);
+    rb_define_singleton_method(z85, "_decode", Z85_decode, 1);
 }

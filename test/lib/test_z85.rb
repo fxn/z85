@@ -80,32 +80,35 @@ class TestZ85 < Minitest::Test
 
   test "encode raises if the length of the binary is not a multiple of 4" do
     1.upto(3) do |n|
-      e = assert_raises(StandardError) { Z85.encode("\0" * n) }
-      assert_equal "Invalid string, number of bytes must be a multiple of 4", e.message
+      e = assert_raises(Z85::Error) { Z85.encode("\0" * n) }
+      assert_equal "Input length should be 0 mod 4. Please, check Z85.encode_with_padding.", e.message
     end
   end
 
   test "encode raises if the length of an encoded string is not a multiple of 5" do
     1.upto(4) do |n|
-      e = assert_raises(StandardError) { Z85.decode("\0" * n) }
-      assert_equal "Invalid string, number of bytes must be a multiple of 5", e.message
+      e = assert_raises(Z85::Error) { Z85.decode("\0" * n) }
+      assert_equal "Input length should be 0 mod 5. Please, check Z85.decode_with_padding.", e.message
     end
   end
 
-  test "passing unexpected objects raises TypeError (in particular, it does not segfault)" do
+  test "passing unexpected objects raises StandardError" do
     [nil, 1, [], {}, Object.new].each do |unexpected_object|
-      assert_raises(TypeError) { Z85.encode(unexpected_object) }
-      assert_raises(TypeError) { Z85.decode(unexpected_object) }
+      assert_raises(StandardError) { Z85.encode(unexpected_object) }
+      assert_raises(StandardError) { Z85.decode(unexpected_object) }
     end
   end
 
-  test "decode_with_padding raises if the padding length is invalid" do
-    e = assert_raises(StandardError) { Z85.decode_with_padding("HelloWorld7") }
-    assert_equal "Invalid padding length", e.message
+  test "decode_with_padding raises if the counter is invalid" do
+    e = assert_raises(Z85::Error) { Z85.decode_with_padding("HelloWorld7") }
+    assert_equal "Invalid counter: 7", e.message
+
+    e = assert_raises(Z85::Error) { Z85.decode_with_padding("HelloWorldX") }
+    assert_equal "Invalid counter: X", e.message
   end
 
   test "decode_with_padding raises if the padding length is too large" do
-    e = assert_raises(StandardError) { Z85.decode_with_padding("1") }
-    assert_equal "Invalid padded string", e.message
+    e = assert_raises(Z85::Error) { Z85.decode_with_padding("1") }
+    assert_equal "String too short for counter 1", e.message
   end
 end
