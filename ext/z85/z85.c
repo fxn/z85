@@ -102,6 +102,16 @@ static VALUE _decode(VALUE string, int padding)
         rb_raise(rb_eRuntimeError, "Invalid string, number of bytes must be a multiple of 5");
 
     size_t decoded_size = data_len * 4 / 5;
+
+    /* Verify the counter looks legit before even allocating memory. */
+    if (padding) {
+        int counter = data[data_len] - '0';
+        if (counter < 0 || counter > 3)
+            rb_raise(rb_eRuntimeError, "Invalid padding length");
+        else if (decoded_size < (size_t) counter)
+            rb_raise(rb_eRuntimeError, "Invalid padded string");
+    }
+
     byte* decoded = malloc(decoded_size);
 
     uint byte_nbr = 0;
@@ -119,19 +129,9 @@ static VALUE _decode(VALUE string, int padding)
         }
     }
 
-    VALUE out = 0;
-    if (padding) {
-        int counter = data[data_len] - '0';
-        if (counter < 0 || counter > 3) {
-          rb_raise(rb_eRuntimeError, "Invalid padding length");
-        } else if (decoded_size >= (size_t) counter) {
-            out = rb_str_new((const char*) decoded, decoded_size - counter);
-        } else {
-            rb_raise(rb_eRuntimeError, "Invalid padded string");
-        }
-    } else {
-        out = rb_str_new((const char*) decoded, decoded_size);
-    }
+    VALUE out = padding ?
+      rb_str_new((const char*) decoded, decoded_size - (data[data_len] - '0')) :
+      rb_str_new((const char*) decoded, decoded_size);
 
     free(decoded);
 
