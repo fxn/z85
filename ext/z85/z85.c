@@ -121,11 +121,11 @@ static VALUE _decode(VALUE string, int padding)
 
     VALUE out = 0;
     if (padding) {
-        int padding_length = data[size] - '0';
-        if (padding_length < 0 || padding_length > 3) {
+        int counter = data[size] - '0';
+        if (counter < 0 || counter > 3) {
           rb_raise(rb_eRuntimeError, "Invalid padding length");
-        } else if (decoded_size >= (size_t) padding_length) {
-            out = rb_str_new((const char*) decoded, decoded_size - padding_length);
+        } else if (decoded_size >= (size_t) counter) {
+            out = rb_str_new((const char*) decoded, decoded_size - counter);
         } else {
             rb_raise(rb_eRuntimeError, "Invalid padded string");
         }
