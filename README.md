@@ -34,17 +34,17 @@ Strings returned by `encode_with_padding` have encoding `Encoding::US_ASCII`, an
 
 ### How does padding work?
 
-Given "foo", the method `encode_with_padding` does this:
+Given `foo`, the method `encode_with_padding` does this:
 
-1. Since "foo" has three bytes, the method appends one `\0`: "foo\0".
-2. Encodes that padded string, which yields "w]zO/".
-3. Appends the counter, returning "w]zO/1".
+1. Since `foo` has three bytes, the method appends one `\0`: `foo\0`.
+2. Encodes that padded string, which yields `w]zO/`.
+3. Appends the counter, returning `w]zO/1`.
 
-The method `decode_with_padding` just undoes that, so given "e=U>K3":
+The method `decode_with_padding` just undoes that, so given `w]zO/1`:
 
-1. Chops the counter, obtaining "w]zO/".
-2. Decodes that string, which yields "foo\0".
-3. Chops as many `\0`s as the counter says, returning "foo".
+1. Chops the counter, obtaining `w]zO/`.
+2. Decodes that string, which yields `foo\0`.
+3. Chops as many `\0`s as the counter says, returning `foo`.
 
 Padding support was inspired by https://github.com/artemkin/z85.
 
