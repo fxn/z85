@@ -25,25 +25,26 @@ To address this, `z85` provides `*_with_padding` variants of the methods that ar
 
 ```ruby
 # 👍 USE THESE ONES FOR ARBITRARY BINARIES.
-Z85.encode_with_padding("\x86O\xD2o\xB5Y\xF7[") # => "HelloWorld0"
-Z85.decode_with_padding("HelloWorld0")          # => "\x86O\xD2o\xB5Y\xF7["
+"\x86O".bytesize                  # => 2, no problem
+Z85.encode_with_padding("\x86O")  # => "Hed^H2"
+Z85.decode_with_padding("Hed^H2") # => "\x86O"
 ```
 
 Strings returned by `encode_with_padding` have encoding `Encoding::US_ASCII`, and the ones returned by `decode_with_padding` have encoding `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
 
 ### How does padding work?
 
-Given ".", the method `encode_with_padding` does this:
+Given "foo", the method `encode_with_padding` does this:
 
-1. Since "." has one byte, the method appends three `\0`s: ".\0\0\0".
-2. Encodes that padded string, which yields "e=U>K".
-3. Appends the counter, returning "e=U>K3".
+1. Since "foo" has three bytes, the method appends one `\0`: "foo\0".
+2. Encodes that padded string, which yields "w]zO/".
+3. Appends the counter, returning "w]zO/1".
 
 The method `decode_with_padding` just undoes that, so given "e=U>K3":
 
-1. Chops the counter, obtaining "e=U>K".
-2. Decodes that string, which yields ".\0\0\0".
-3. Chops as many `\0`s as the counter says, returning ".".
+1. Chops the counter, obtaining "w]zO/".
+2. Decodes that string, which yields "foo\0".
+3. Chops as many `\0`s as the counter says, returning "foo".
 
 Padding support was inspired by https://github.com/artemkin/z85.
 
