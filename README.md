@@ -15,7 +15,7 @@ Z85.encode("\x86O\xD2o\xB5Y\xF7[") # => "HelloWorld"
 Z85.decode("HelloWorld")           # => "\x86O\xD2o\xB5Y\xF7["
 ```
 
-The string returned by `decode` has encoding `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
+Strings returned by `encode` have encoding `Encoding::US_ASCII`, and the ones returned by `decode` have encoding `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
 
 ## Z85 with padding
 
@@ -29,7 +29,7 @@ Z85.encode_with_padding("\x86O\xD2o\xB5Y\xF7[") # => "HelloWorld0"
 Z85.decode_with_padding("HelloWorld0")          # => "\x86O\xD2o\xB5Y\xF7["
 ```
 
-The string returned by `decode_with_padding` has encoding `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
+Strings returned by `encode_with_padding` have encoding `Encoding::US_ASCII`, and the ones returned by `decode_with_padding` have encoding `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
 
 ### How does padding work?
 

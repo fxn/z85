@@ -71,11 +71,11 @@ class TestZ85 < Minitest::Test
   end
 
   test "encode returns a string with the locale encoding" do
-    assert_equal Encoding.find("locale"), Z85.encode("\x86O\xD2o\xB5Y\xF7[").encoding
+    assert_equal Encoding::US_ASCII, Z85.encode("\x86O\xD2o\xB5Y\xF7[").encoding
   end
 
   test "encode_with_padding returns a string with the locale encoding" do
-    assert_equal Encoding.find("locale"), Z85.encode_with_padding("\x86O\xD2o\xB5Y\xF7[").encoding
+    assert_equal Encoding::US_ASCII, Z85.encode_with_padding("\x86O\xD2o\xB5Y\xF7[").encoding
   end
 
   test "decode returns a binary string" do

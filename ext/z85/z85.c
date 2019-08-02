@@ -84,7 +84,7 @@ static VALUE Z85_encode(VALUE _mod, VALUE string)
     }
     encoded[char_nbr] = 0;
 
-    VALUE out = rb_locale_str_new_cstr(encoded);
+    VALUE out = rb_usascii_str_new_cstr(encoded);
     free(encoded);
     return out;
 }
