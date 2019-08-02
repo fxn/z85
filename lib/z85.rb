@@ -36,14 +36,30 @@ module Z85
     def decode_with_padding(string)
       err "Input length should be 1 mod 5" if string.bytesize % 5 != 1
 
-      counter = string[-1]
-      err "Invalid counter: #{counter}" if counter < "0" || counter > "3"
-
+      counter = extract_counter(string)
       decoded = _decode(string)
-      size = decoded.bytesize - counter.to_i
-      err "String too short for counter #{counter}" if size < 0
 
-      decoded.slice!(0, size)
+      begin
+        decoded[-counter, counter] = ""
+      rescue IndexError
+        err "String too short for counter #{counter}"
+      end
+
+      decoded
+    end
+
+    def extract_counter(string)
+      begin
+        counter = Integer(string[-1])
+      rescue ArgumentError
+        err "Invalid counter: #{string[-1]}"
+      end
+
+      if counter <= 3
+        counter
+      else
+        err "Invalid counter: #{counter}"
+      end
     end
   end
 end
