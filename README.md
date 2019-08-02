@@ -5,7 +5,7 @@
 
 `z85` is a Ruby gem written in C that implements the [Z85](https://rfc.zeromq.org/spec:32/Z85/) binary-to-text encoding.
 
-## Z85 proper
+## Usage
 
 Z85 as such is provided by the methods `encode`/`decode`:
 
@@ -15,13 +15,11 @@ Z85.encode("\x86O\xD2o\xB5Y\xF7[") # => "HelloWorld"
 Z85.decode("HelloWorld")           # => "\x86O\xD2o\xB5Y\xF7["
 ```
 
-Strings returned by `encode` have encoding `Encoding::US_ASCII`, and the ones returned by `decode` have encoding `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
+Buffers to be encoded, however, must have a number of bytes divisible by 4:
 
-## Z85 with padding
+> The binary frame SHALL have a length that is divisible by 4 with no remainder [...] It is up to the application to ensure that frames and strings are padded if necessary.
 
-Z85 requires the input to have a number of bytes divisible by 4, so you cannot pass arbitrary arguments to `encode`.
-
-To address this, `z85` provides `*_with_padding` variants of the methods that are able to handle any binary:
+An arbitrary binary may no satisfy that, so the gem provides  `*_with_padding` variants to automate padding on your behalf:
 
 ```ruby
 # 👍 USE THESE ONES FOR ARBITRARY BINARIES.
@@ -30,7 +28,7 @@ Z85.encode_with_padding("\x86O")  # => "Hed^H2"
 Z85.decode_with_padding("Hed^H2") # => "\x86O"
 ```
 
-Strings returned by `encode_with_padding` have encoding `Encoding::US_ASCII`, and the ones returned by `decode_with_padding` have encoding `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
+Encoded strings are `Encoding::US_ASCII`, and decoded ones are `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
 
 ### How does padding work?
 
