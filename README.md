@@ -3,7 +3,7 @@
 [![Gem Version](https://img.shields.io/gem/v/z85.svg?style=for-the-badge)](https://rubygems.org/gems/z85)
 [![Build Status](https://img.shields.io/travis/com/fxn/z85.svg?style=for-the-badge&branch=master)](https://travis-ci.com/fxn/z85)
 
-`z85` is a Ruby gem written in C for [Z85](https://rfc.zeromq.org/spec:32/Z85/) encoding.
+`z85` is a Ruby gem written in C that implements the [Z85](https://rfc.zeromq.org/spec:32/Z85/) binary-to-text encoding.
 
 ## Z85 proper
 
