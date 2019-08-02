@@ -60,7 +60,7 @@ static byte decoder[96] = {
     0x21, 0x22, 0x23, 0x4F, 0x00, 0x50, 0x00, 0x00
 };
 
-static VALUE Z85_encode(VALUE _mod, VALUE string)
+static VALUE z85_encode(VALUE _mod, VALUE string)
 {
     byte* data = (byte*) StringValuePtr(string);
     long size = RSTRING_LEN(string);
@@ -89,7 +89,7 @@ static VALUE Z85_encode(VALUE _mod, VALUE string)
     return out;
 }
 
-static VALUE Z85_decode(VALUE _mod, VALUE rstring)
+static VALUE z85_decode(VALUE _mod, VALUE rstring)
 {
     char* string = StringValuePtr(rstring);
     long strlen = RSTRING_LEN(rstring);
@@ -123,7 +123,8 @@ static VALUE Z85_decode(VALUE _mod, VALUE rstring)
 void Init_z85()
 {
     VALUE z85 = rb_define_module("Z85");
+    VALUE z85_singleton_class = rb_singleton_class(z85);
 
-    rb_define_singleton_method(z85, "_encode", Z85_encode, 1);
-    rb_define_singleton_method(z85, "_decode", Z85_decode, 1);
+    rb_define_private_method(z85_singleton_class, "_encode", z85_encode, 1);
+    rb_define_private_method(z85_singleton_class, "_decode", z85_decode, 1);
 }

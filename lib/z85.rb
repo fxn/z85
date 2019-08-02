@@ -52,7 +52,7 @@ module Z85
       decoded
     end
 
-    def extract_counter(string)
+    private def extract_counter(string)
       begin
         counter = Integer(string[-1])
       rescue ArgumentError
