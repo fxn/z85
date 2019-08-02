@@ -19,7 +19,7 @@ Buffers to be encoded, however, must have a number of bytes divisible by 4:
 
 > The binary frame SHALL have a length that is divisible by 4 with no remainder [...] It is up to the application to ensure that frames and strings are padded if necessary.
 
-An arbitrary binary may no satisfy that, so the gem provides  `*_with_padding` variants to automate padding on your behalf:
+Arbitrary binaries may no satisfy that, so `z85` provides  `*_with_padding` variants to automate padding on your behalf:
 
 ```ruby
 # 👍 USE THESE ONES FOR ARBITRARY BINARIES.
