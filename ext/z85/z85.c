@@ -60,13 +60,28 @@ static byte decoder[96] = {
     0x21, 0x22, 0x23, 0x4F, 0x00, 0x50, 0x00, 0x00
 };
 
+static void* z85_malloc(size_t size)
+{
+    void* ptr = malloc(size);
+
+    /*
+      malloc(0) is implementation-defined and could return NULL, so if ptr is
+      NULL, we need to check size too before raising. Note that free(NULL) is
+      valid (it does nothing).
+    */
+    if (!ptr && size)
+      rb_raise(rb_eNoMemError, "Out of memory");
+
+    return ptr;
+}
+
 static VALUE z85_encode(VALUE _mod, VALUE string)
 {
     byte* data = (byte*) StringValuePtr(string);
     long size = RSTRING_LEN(string);
 
     size_t encoded_len = size * 5 / 4;
-    char *encoded = malloc(encoded_len + 1);
+    char *encoded = z85_malloc(encoded_len + 1);
     uint char_nbr = 0;
     uint byte_nbr = 0;
     uint32_t value = 0;
@@ -97,7 +112,7 @@ static VALUE z85_decode(VALUE _mod, VALUE rstring)
       strlen--; /* It is padded, ignore the counter */
 
     size_t decoded_size = strlen * 4 / 5;
-    byte* decoded = malloc(decoded_size);
+    byte* decoded = z85_malloc(decoded_size);
 
     uint byte_nbr = 0;
     uint char_nbr = 0;
