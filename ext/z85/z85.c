@@ -81,7 +81,7 @@ static VALUE z85_encode(VALUE _mod, VALUE string)
     long size = RSTRING_LEN(string);
 
     size_t encoded_len = size * 5 / 4;
-    char *encoded = z85_malloc(encoded_len + 1);
+    char* encoded = z85_malloc(encoded_len + 1);
     uint char_nbr = 0;
     uint byte_nbr = 0;
     uint32_t value = 0;
