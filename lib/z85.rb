@@ -22,6 +22,18 @@ module Z85
       _encode(string)
     end
 
+    def encode_new(string)
+      string = string.to_str
+
+      if string.bytesize % 4 != 0
+        err "Number of bytes should be 0 mod 4. Please, check Z85.encode_with_padding."
+      end
+
+      encoded = String.new(capacity: (string.bytesize*5)/4)
+      _encode_new(string, encoded)
+      encoded
+    end
+
     def encode_with_padding(string)
       n  = 4 - (string.bytesize % 4)
       n == 4 ? _encode(string) + "0" : _encode(string + PADDINGS[n]) + n.to_s

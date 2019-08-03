@@ -89,6 +89,32 @@ static VALUE z85_encode(VALUE _mod, VALUE string)
     return out;
 }
 
+static VALUE z85_encode_new(VALUE _mod, VALUE string, VALUE out)
+{
+    byte* data = (byte*) RSTRING_PTR(string);
+    long size = RSTRING_LEN(string);
+
+    char* encoded = RSTRING_PTR(out);
+    uint char_nbr = 0;
+    uint byte_nbr = 0;
+    uint32_t value = 0;
+
+    while (byte_nbr < size) {
+        value = value * 256 + data[byte_nbr++];
+        if (byte_nbr % 4 == 0) {
+            uint divisor = 85 * 85 * 85 * 85;
+            while (divisor) {
+                encoded[char_nbr++] = encoder[value / divisor % 85];
+                divisor /= 85;
+            }
+            value = 0;
+        }
+    }
+    encoded[char_nbr] = 0;
+
+    return Qnil;
+}
+
 static VALUE z85_decode(VALUE _mod, VALUE rstring)
 {
     char* string = StringValuePtr(rstring);
@@ -126,5 +152,6 @@ void Init_z85()
     VALUE z85_singleton_class = rb_singleton_class(z85);
 
     rb_define_private_method(z85_singleton_class, "_encode", z85_encode, 1);
+    rb_define_private_method(z85_singleton_class, "_encode_new", z85_encode_new, 2);
     rb_define_private_method(z85_singleton_class, "_decode", z85_decode, 1);
 }
