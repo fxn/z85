@@ -28,8 +28,6 @@ Z85.encode_with_padding("\x86O")  # => "Hed^H2"
 Z85.decode_with_padding("Hed^H2") # => "\x86O"
 ```
 
-Encoded strings are `Encoding::US_ASCII`, and decoded ones are `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
-
 ### How does padding work?
 
 Given `foo`, the method `encode_with_padding` does this:
@@ -49,6 +47,10 @@ Padding support was inspired by https://github.com/artemkin/z85.
 ### Interoperability warning
 
 Since padding does not belong to the Z85 specification, if you encode with padding using `z85`, and decode using another library, the decoding end will probably need to implement what `decode_with_padding` does. Should be straightforward, just emulate what is described in the previous section.
+
+### Encodings
+
+Encoded strings are `Encoding::US_ASCII`, and decoded ones are `Encoding::ASCII_8BIT`, also known as `Encoding::BINARY`.
 
 ## Implementation details
 
