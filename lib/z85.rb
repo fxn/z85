@@ -16,7 +16,7 @@ module Z85
 
     def encode(string)
       if string.bytesize % 4 != 0
-        err "Input length should be 0 mod 4. Please, check Z85.encode_with_padding."
+        err "Number of bytes should be 0 mod 4. Please, check Z85.encode_with_padding."
       end
 
       _encode(string)

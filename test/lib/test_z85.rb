@@ -89,7 +89,7 @@ class TestZ85 < Minitest::Test
   test "encode raises if the length of the binary is not a multiple of 4" do
     1.upto(3) do |n|
       e = assert_raises(Z85::Error) { Z85.encode("\0" * n) }
-      assert_equal "Input length should be 0 mod 4. Please, check Z85.encode_with_padding.", e.message
+      assert_equal "Number of bytes should be 0 mod 4. Please, check Z85.encode_with_padding.", e.message
     end
   end
 
