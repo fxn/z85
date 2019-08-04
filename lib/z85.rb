@@ -7,8 +7,6 @@ module Z85
   PADDINGS = ["", "\0", "\0\0", "\0\0\0"].freeze
   private_constant :PADDINGS
 
-  class Error < StandardError; end
-
   class << self
     private def err(message)
       raise Error, message
@@ -50,20 +48,6 @@ module Z85
       end
 
       decoded
-    end
-
-    private def extract_counter(string)
-      begin
-        counter = Integer(string[-1])
-      rescue ArgumentError
-        err "Invalid counter: #{string[-1]}"
-      end
-
-      if counter <= 3
-        counter
-      else
-        err "Invalid counter: #{counter}"
-      end
     end
   end
 end

@@ -33,6 +33,8 @@
 
 typedef unsigned char byte;
 
+static VALUE z85_error;
+
 static char encoder[85 + 1] = {
     "0123456789"
     "abcdefghij"
@@ -119,12 +121,26 @@ static VALUE z85_decode(VALUE _mod, VALUE rstring)
     return out;
 }
 
+static VALUE z85_extract_counter(VALUE _mod, VALUE encoded)
+{
+    char* string = StringValuePtr(encoded);
+    char counter = string[RSTRING_LEN(encoded) - 1] - '0';
+    if (0 <= counter && counter <= 3) {
+        return INT2FIX(counter);
+    } else {
+        rb_raise(z85_error, "Invalid counter: %c", counter + '0');
+    }
+}
+
 /* This function has a special name and it is invoked by Ruby to initialize the extension. */
 void Init_z85()
 {
     VALUE z85 = rb_define_module("Z85");
     VALUE z85_singleton_class = rb_singleton_class(z85);
 
+    z85_error = rb_define_class_under(z85, "Error", rb_eStandardError);
+
     rb_define_private_method(z85_singleton_class, "_encode", z85_encode, 1);
     rb_define_private_method(z85_singleton_class, "_decode", z85_decode, 1);
+    rb_define_private_method(z85_singleton_class, "extract_counter", z85_extract_counter, 1);
 }
