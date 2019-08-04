@@ -71,18 +71,18 @@ static VALUE z85_encode(VALUE _mod, VALUE string)
     char* encoded = xmalloc(encoded_len + 1);
     uint char_nbr = 0;
     uint byte_nbr = 0;
-    uint32_t value = 0;
 
     while (byte_nbr < size) {
-        value = value * 256 + data[byte_nbr++];
-        if (byte_nbr % 4 == 0) {
-            uint divisor = 85 * 85 * 85 * 85;
-            while (divisor) {
-                encoded[char_nbr++] = encoder[value / divisor % 85];
-                divisor /= 85;
-            }
-            value = 0;
-        }
+        uint32_t value = 0;
+
+        for (int i = 0; i < 4; i++)
+            value = value*256 + data[byte_nbr++];
+
+        encoded[char_nbr++] = encoder[value/(85*85*85*85) % 85];
+        encoded[char_nbr++] = encoder[value/(85*85*85) % 85];
+        encoded[char_nbr++] = encoder[value/(85*85) % 85];
+        encoded[char_nbr++] = encoder[value/85 % 85];
+        encoded[char_nbr++] = encoder[value % 85];
     }
     encoded[char_nbr] = 0;
 
@@ -103,17 +103,17 @@ static VALUE z85_decode(VALUE _mod, VALUE rstring)
 
     uint byte_nbr = 0;
     uint char_nbr = 0;
-    uint32_t value = 0;
+
     while (char_nbr < strlen) {
-        value = value * 85 + decoder[(byte) string[char_nbr++] - 32];
-        if (char_nbr % 5 == 0) {
-            uint divisor = 256 * 256 * 256;
-            while (divisor) {
-                decoded[byte_nbr++] = value / divisor % 256;
-                divisor /= 256;
-            }
-            value = 0;
-        }
+        uint32_t value = 0;
+
+        for (int i = 0; i < 5; i++)
+            value = value*85 + decoder[(byte) string[char_nbr++] - 32];
+
+        decoded[byte_nbr++] = value/(256*256*256) % 256;
+        decoded[byte_nbr++] = value/(256*256) % 256;
+        decoded[byte_nbr++] = value/256 % 256;
+        decoded[byte_nbr++] = value % 256;
     }
 
     VALUE out = rb_str_new((const char*) decoded, decoded_size);
