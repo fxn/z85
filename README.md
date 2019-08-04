@@ -1,4 +1,4 @@
-# Z85
+# z85
 
 [![Gem Version](https://img.shields.io/gem/v/z85.svg?style=for-the-badge)](https://rubygems.org/gems/z85)
 [![Build Status](https://img.shields.io/travis/com/fxn/z85.svg?style=for-the-badge&branch=master)](https://travis-ci.com/fxn/z85)
