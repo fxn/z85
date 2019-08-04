@@ -132,6 +132,18 @@ static VALUE z85_extract_counter(VALUE _mod, VALUE encoded)
     }
 }
 
+static VALUE z85_trim_padding(VALUE _mod, VALUE padded_string, VALUE counter)
+{
+    int padding_size = FIX2INT(counter);
+    long trimmed_len = RSTRING_LEN(padded_string) - padding_size;
+
+    if (trimmed_len < 0)
+        rb_raise(z85_error, "String too short for counter %d", padding_size);
+    rb_str_resize(padded_string, trimmed_len);
+
+    return Qnil;
+}
+
 /* This function has a special name and it is invoked by Ruby to initialize the extension. */
 void Init_z85()
 {
@@ -143,4 +155,5 @@ void Init_z85()
     rb_define_private_method(z85_singleton_class, "_encode", z85_encode, 1);
     rb_define_private_method(z85_singleton_class, "_decode", z85_decode, 1);
     rb_define_private_method(z85_singleton_class, "extract_counter", z85_extract_counter, 1);
+    rb_define_private_method(z85_singleton_class, "trim_padding", z85_trim_padding, 2);
 }

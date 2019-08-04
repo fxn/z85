@@ -40,12 +40,7 @@ module Z85
 
       counter = extract_counter(string)
       decoded = _decode(string)
-
-      begin
-        decoded[-counter, counter] = ""
-      rescue IndexError
-        err "String too short for counter #{counter}"
-      end
+      trim_padding(decoded, counter)
 
       decoded
     end
