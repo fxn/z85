@@ -22,7 +22,7 @@ module Z85
 
     def encode_with_padding(string)
       n  = 4 - (string.bytesize % 4)
-      n == 4 ? _encode(string) + "0" : _encode(string + PADDINGS[n]) + n.to_s
+      n == 4 ? _encode(string) << "0" : _encode(string + PADDINGS[n]) << n.to_s
     end
 
     def decode(string)
